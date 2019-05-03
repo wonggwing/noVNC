@@ -62,6 +62,9 @@ export function setCapture(elem) {
 
         elem.setCapture();
 
+        elem.requestPointerLock = elem.requestPointerLock || elem.mozRequestPointerLock;
+        elem.requestPointerLock();
+
         // IE releases capture on 'click' events which might not trigger
         elem.addEventListener('mouseup', releaseCapture);
 
@@ -135,5 +138,11 @@ export function releaseCapture() {
 
         window.removeEventListener('mousemove', _captureProxy);
         window.removeEventListener('mouseup', _captureProxy);
+        
+
+        _captureElem.exitPointerLock = _captureElem.exitPointerLock || _captureElem.mozExitPointerLock;
+
+        // Attempt to unlock
+        _captureElem.exitPointerLock();
     }
 }

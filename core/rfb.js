@@ -756,10 +756,25 @@ export default class RFB extends EventTargetMixin {
         if (this._viewOnly) { return; } // View only, skip mouse events
 
         if (this._rfb_connection_state !== 'connected') { return; }
-        RFB.messages.pointerEvent(this._sock, this._display.absX(x), this._display.absY(y), this._mouse_buttonMask);
+        
+        // 1 = left click, 2 = middle click, 3 = right click
+        if ( bmask === 4 ) bmask = 3;
+        if (down) {
+            mouseDown(bmask);
+        } else {
+            mouseClick(bmask);
+        }
+        /*
+        if (!window.mouseRelativeLock) {
+            RFB.messages.pointerEvent(this._sock, this._display.absX(x), this._display.absY(y), this._mouse_buttonMask);
+        } else {
+            // RFB.messages.pointerEvent(this._sock, moveX, moveY, this._mouse_buttonMask);
+            // mousemoveRelative(movementX, movementY);
+        }
+        */
     }
 
-    _handleMouseMove(x, y) {
+    _handleMouseMove(x, y, movementX, movementY) {
         if (this._viewportDragging) {
             const deltaX = this._viewportDragPos.x - x;
             const deltaY = this._viewportDragPos.y - y;
@@ -779,7 +794,16 @@ export default class RFB extends EventTargetMixin {
         if (this._viewOnly) { return; } // View only, skip mouse events
 
         if (this._rfb_connection_state !== 'connected') { return; }
-        RFB.messages.pointerEvent(this._sock, this._display.absX(x), this._display.absY(y), this._mouse_buttonMask);
+        
+        mousemoveRelative(movementX, movementY);
+        /*
+        if (!window.mouseRelativeLock) {
+            RFB.messages.pointerEvent(this._sock, this._display.absX(x), this._display.absY(y), this._mouse_buttonMask);
+        } else {
+            // RFB.messages.pointerEvent(this._sock, moveX, moveY, this._mouse_buttonMask);
+            mousemoveRelative(movementX, movementY);
+        }
+        */
     }
 
     // Message Handlers

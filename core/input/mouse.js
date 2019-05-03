@@ -20,6 +20,7 @@ export default class Mouse {
         this._lastTouchPos = null;
 
         this._pos = null;
+        this._movement = null;
         this._wheelStepXTimer = null;
         this._wheelStepYTimer = null;
         this._accumulatedWheelDeltaX = 0;
@@ -195,7 +196,8 @@ export default class Mouse {
 
     _handleMouseMove(e) {
         this._updateMousePosition(e);
-        this.onmousemove(this._pos.x, this._pos.y);
+        this._updateMouseMovement(e);
+        this.onmousemove(this._pos.x, this._pos.y, this._movement.x, this._movement.y);
         stopEvent(e);
     }
 
@@ -233,6 +235,12 @@ export default class Mouse {
             y = e.clientY - bounds.top;
         }
         this._pos = {x: x, y: y};
+    }
+
+    // Update movement relative to target
+    _updateMouseMovement(e) {
+        e = getPointerEvent(e);
+        this._movement = {x: e.movementX, y: e.movementY};
     }
 
     // ===== PUBLIC METHODS =====
