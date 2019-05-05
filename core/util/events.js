@@ -140,9 +140,13 @@ export function releaseCapture() {
         window.removeEventListener('mouseup', _captureProxy);
         
 
-        _captureElem.exitPointerLock = _captureElem.exitPointerLock || _captureElem.mozExitPointerLock;
+        try{
+            _captureElem.exitPointerLock = _captureElem.exitPointerLock || _captureElem.mozExitPointerLock;
 
-        // Attempt to unlock
-        _captureElem.exitPointerLock();
+            // Attempt to unlock
+            _captureElem.exitPointerLock();
+        } catch (ex) {
+            // chrome did not implement exitPointerLock
+        }
     }
 }
